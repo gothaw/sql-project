@@ -26,14 +26,13 @@ CREATE TABLE `album` (
   `al_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `al_title` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `al_no_songs` tinyint(3) unsigned NOT NULL,
-  `al_genre` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `al_year` year(4) DEFAULT NULL,
   `al_average_price` tinyint(3) DEFAULT NULL,
   `band_ba_id` int(10) unsigned NOT NULL,
   PRIMARY KEY (`al_id`),
   KEY `fk_album_band1_idx` (`band_ba_id`),
   CONSTRAINT `fk_album_band1` FOREIGN KEY (`band_ba_id`) REFERENCES `band` (`ba_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -42,6 +41,7 @@ CREATE TABLE `album` (
 
 LOCK TABLES `album` WRITE;
 /*!40000 ALTER TABLE `album` DISABLE KEYS */;
+INSERT INTO `album` VALUES (1,'Batallions of Fear',14,1988,NULL,1);
 /*!40000 ALTER TABLE `album` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -82,14 +82,13 @@ DROP TABLE IF EXISTS `band`;
 CREATE TABLE `band` (
   `ba_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `ba_name` varchar(45) COLLATE utf8_unicode_ci NOT NULL,
-  `ba_genre` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `ba_no_members` smallint(3) DEFAULT NULL,
-  `ba_number_of_albums` smallint(3) DEFAULT NULL,
+  `ba_no_albums` smallint(3) DEFAULT NULL,
   `ba_country` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `ba_year_established` year(4) DEFAULT NULL,
   `ba_year_disbanded` year(4) DEFAULT NULL,
   PRIMARY KEY (`ba_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -98,6 +97,7 @@ CREATE TABLE `band` (
 
 LOCK TABLES `band` WRITE;
 /*!40000 ALTER TABLE `band` DISABLE KEYS */;
+INSERT INTO `band` VALUES (1,'Blind Guardian',4,11,'Germany',1988,NULL),(2,'Iron Maiden',5,16,'United Kingdom',1975,NULL),(3,'Black Sabbath',4,19,'United Kingdom',1968,2017),(4,'Dream Theater',5,14,'United States',1985,NULL),(5,'Dio',5,10,'United States',1982,2010),(6,'Metallica',4,10,'United States',1981,NULL);
 /*!40000 ALTER TABLE `band` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -138,6 +138,8 @@ DROP TABLE IF EXISTS `band_has_musician`;
 CREATE TABLE `band_has_musician` (
   `band_ba_id` int(10) unsigned NOT NULL,
   `musician_mu_id` int(10) unsigned NOT NULL,
+  `ba_mu_joined` year(4) NOT NULL,
+  `ba_mu_left` year(4) DEFAULT NULL,
   PRIMARY KEY (`band_ba_id`,`musician_mu_id`),
   KEY `fk_band_has_musician_musician1_idx` (`musician_mu_id`),
   KEY `fk_band_has_musician_band1_idx` (`band_ba_id`),
@@ -164,9 +166,10 @@ DROP TABLE IF EXISTS `genre`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `genre` (
   `ge_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `ge_name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  PRIMARY KEY (`ge_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+  `ge_name` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  PRIMARY KEY (`ge_id`),
+  UNIQUE KEY `ge_name_UNIQUE` (`ge_name`)
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -175,6 +178,7 @@ CREATE TABLE `genre` (
 
 LOCK TABLES `genre` WRITE;
 /*!40000 ALTER TABLE `genre` DISABLE KEYS */;
+INSERT INTO `genre` VALUES (1,'Heavy Metal'),(2,'Power Metal'),(5,'Progressive Metal'),(4,'Progressive Rock'),(7,'Speed Metal'),(6,'Symphonic Metal'),(3,'Thrash Metal');
 /*!40000 ALTER TABLE `genre` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -242,7 +246,6 @@ CREATE TABLE `musician` (
   `mu_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `mu_first_name` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `mu_last_name` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `mu_role` varchar(45) COLLATE utf8_unicode_ci NOT NULL,
   `mu_city_origin` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `mu_country_origin` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `mu_date_of_birth` date DEFAULT NULL,
@@ -345,7 +348,7 @@ DROP TABLE IF EXISTS `song`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `song` (
-  `so_id` int(10) unsigned NOT NULL,
+  `so_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `so_title` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `so_number_in_album` tinyint(3) unsigned NOT NULL,
   `so_duration` smallint(4) unsigned NOT NULL,
@@ -376,4 +379,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-01-26 15:11:10
+-- Dump completed on 2020-01-27 23:23:30
