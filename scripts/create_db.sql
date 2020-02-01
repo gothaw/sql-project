@@ -20,9 +20,8 @@ USE `metal_rock_db` ;
 CREATE TABLE IF NOT EXISTS `metal_rock_db`.`band` (
   `ba_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `ba_name` VARCHAR(45) NOT NULL,
-  `ba_genre` VARCHAR(255) NOT NULL,
   `ba_no_members` SMALLINT(3) NULL,
-  `ba_number_of_albums` SMALLINT(3) NULL,
+  `ba_no_albums` SMALLINT(3) NULL,
   `ba_country` VARCHAR(255) NULL,
   `ba_year_established` YEAR(4) NULL,
   `ba_year_disbanded` YEAR(4) NULL,
@@ -92,6 +91,8 @@ ENGINE = InnoDB;
 CREATE TABLE IF NOT EXISTS `metal_rock_db`.`band_has_musician` (
   `band_ba_id` INT UNSIGNED NOT NULL,
   `musician_mu_id` INT UNSIGNED NOT NULL,
+  `ba_mu_joined` YEAR(4) NOT NULL,
+  `ba_mu_left` YEAR(4) NULL,
   PRIMARY KEY (`band_ba_id`, `musician_mu_id`),
   INDEX `fk_band_has_musician_musician1_idx` (`musician_mu_id` ASC),
   INDEX `fk_band_has_musician_band1_idx` (`band_ba_id` ASC),
@@ -145,8 +146,9 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `metal_rock_db`.`genre` (
   `ge_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `ge_name` VARCHAR(255) NULL,
-  PRIMARY KEY (`ge_id`))
+  `ge_name` VARCHAR(255) NOT NULL,
+  PRIMARY KEY (`ge_id`),
+  UNIQUE INDEX `ge_name_UNIQUE` (`ge_name` ASC))
 ENGINE = InnoDB;
 
 
@@ -165,28 +167,6 @@ CREATE TABLE IF NOT EXISTS `metal_rock_db`.`album_has_genre` (
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_album_has_genre_genre1`
-    FOREIGN KEY (`genre_ge_id`)
-    REFERENCES `metal_rock_db`.`genre` (`ge_id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB;
-
-
--- -----------------------------------------------------
--- Table `metal_rock_db`.`band_has_genre`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `metal_rock_db`.`band_has_genre` (
-  `band_ba_id` INT UNSIGNED NOT NULL,
-  `genre_ge_id` INT UNSIGNED NOT NULL,
-  PRIMARY KEY (`band_ba_id`, `genre_ge_id`),
-  INDEX `fk_band_has_genre_genre1_idx` (`genre_ge_id` ASC),
-  INDEX `fk_band_has_genre_band1_idx` (`band_ba_id` ASC),
-  CONSTRAINT `fk_band_has_genre_band1`
-    FOREIGN KEY (`band_ba_id`)
-    REFERENCES `metal_rock_db`.`band` (`ba_id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `fk_band_has_genre_genre1`
     FOREIGN KEY (`genre_ge_id`)
     REFERENCES `metal_rock_db`.`genre` (`ge_id`)
     ON DELETE NO ACTION
